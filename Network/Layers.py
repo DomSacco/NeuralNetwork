@@ -9,18 +9,10 @@ class Dense:
     def feedforward(self, input):
         return self.weights @ input + self.biases 
 
-class Sigmoid:
+class Activation:
 
-    def __init__(self) -> None:
-        self.sigmoid = np.vectorize(lambda x: 1/(1+np.exp(-x)))
-
-    def feedforward(self, input):
-        return self.sigmoid(input)
-    
-class Relu:
-
-    def __init__(self) -> None:
-        self.relu = np.vectorize(lambda x: max(0, x))
+    def __init__(self, fn) -> None:
+        self.fn = fn
 
     def feedforward(self, input):
-        return self.relu(input)
+        return self.fn(input)
