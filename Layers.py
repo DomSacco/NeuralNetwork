@@ -7,11 +7,11 @@ class Layer(ABC):
         self.input = None
 
     @abstractmethod
-    def feedforwrd(self, input):
+    def feedforward(self, input):
         pass
 
     @abstractmethod
-    def backpropagation(self, gradient_output, learning_rate):
+    def backpropagation(self, gradient_output):
         pass
 
 class Dense(Layer):
@@ -23,11 +23,24 @@ class Dense(Layer):
     def feedforward(self, input):
         self.input = input
         return self.weights @ input + self.biases 
+    
+    def backpropagation(self, gradient_output, learning_rate):
+        nabla_w = np.outer(gradient_output, self.input) # gradient_output.T @ input
+        nabla_b = gradient_output   #
+        self.weights -= learning_rate * nabla_w
+        self.biases -= learning_rate * nabla_b
+        gradient_input = self.weights.T @ gradient_output
+        return gradient_input
 
 class Activation(Layer):
 
-    def __init__(self, fn) -> None:
+    def __init__(self, fn, fn_prime) -> None:
         self.fn = fn
+        self.fn_prime = fn_prime
 
     def feedforward(self, input):
+        self.input = input
         return self.fn(input)
+    
+    def backpropagation(self, gradient_output, learning_rate):
+        return gradient_output * self.fn_prime(self.input)
