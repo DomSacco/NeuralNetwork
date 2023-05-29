@@ -1,5 +1,5 @@
 #import numpy as np
-from Network.Functions.Loss import mse
+from Functions.Loss import mse
 
 class Neuronet:
 
@@ -25,6 +25,12 @@ class Neuronet:
 
                 #loss
                 error += self.cost_fn(y_pred, y)
+
+                if batch_size == count:
+                    batch_count += 1
+                    print(f'Batch {batch_count} compleated')
+                    #self.update()
+                    count = 0
                 
             error /= len(x_train)
             if verbose:
