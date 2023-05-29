@@ -1,12 +1,13 @@
-#import numpy as np
+import numpy as np
 from Functions.Loss import mse, mse_prime
 
 class Neuronet:
 
-    def __init__(self, *layers, learning_rate = 0.01, cost_fn = mse, cost_fn_prime = mse_prime) -> None:
+    def __init__(self, *layers, learning_rate = 0.01, cost_fn, cost_fn_prime) -> None:
         self.layers = list(layers)
         self.learning_rate = learning_rate
         self.cost_fn = cost_fn
+        self.cost_fn_prime = cost_fn_prime
 
     def predict(self, x):
         for l in self.layers:
@@ -33,17 +34,20 @@ class Neuronet:
                 if batch_size == count:
                     batch_count += 1
                     #print(f'Batch {batch_count} compleated')
-                    self.update(mse_prime(y_pred, y))
+                    self.update(self.cost_fn_prime(y_pred, y))
                     count = 0
                 
             error /= len(x_train)
             if verbose:
                 print(f'Epoch {e+1} error: {error}')
     
-    '''
+
     def test(self, x_test, y_test, verbose=True):
         accuracy = 0 
         for x, y in zip(x_test, y_test):
             y_pred = self.predict(x)
-    '''
+            response = np.argmax(y_pred)
+            accuracy += 1 if response == y else 0
+        print(f'Accuratezza totale: {accuracy / x_test.shape[0]}')
+
 
